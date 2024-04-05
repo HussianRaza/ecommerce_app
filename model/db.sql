@@ -40,3 +40,9 @@ CREATE TABLE cart_products(
     product_qty integer,
     PRIMARY KEY(cart_id, product_id)
 );
+
+--update table to have salt hash
+ALTER TABLE
+    users
+ADD
+    COLUMN salt bytea;
