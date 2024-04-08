@@ -1,43 +1,70 @@
-const formidable = require("formidable");
-
 import { check, validationResult } from "express-validator";
+
+const crypto = require("crypto");
 
 import db from "../model/db";
 
-const registerUser = (req, res) => {
-  const form = new formidable.IncomingForm();
+const registerUser = async (req, res, next) => {
+  const validationRules = [
+    check("email").isEmail().normalizeEmail(),
+    check("password").isLength({
+      minLength: 5,
+    }),
+  ];
 
-  form.keepExtentions = true;
-  form.parse(req, async (err, fields) => {
-    req.body = fields;
+  await Promise.all(validationRules.map((validation) => validation.run(req)));
 
-    const validationRules = [
-      check("email").isEmail().normalizeEmail(),
-      check("password").isLength({
-        minLength: 5,
-      }),
-    ];
+  const errors = validationResult(req);
 
-    await Promise.all(validationRules.map((validation) => validation.run(req)));
+  if (!errors.isEmpty()) {
+    return res.status(404).json({ errors: errors.array() });
+  }
 
-    const errors = validationResult(req);
+  try {
+    const { email } = req.body;
+    // await db.query(
+    //   "INSERT INTO users(user_email,user_password) VALUES($1,$2)",
+    //   [email, password]
+    // );
+    // return res.send("user registration success");
 
-    if (!errors.isEmpty()) {
-      console.log(errors);
-      return res.status(404).json({ errors: errors.array() });
-    }
+    var salt = crypto.randomBytes(16);
+    crypto.pbkdf2(
+      req.body.password,
+      salt,
+      310000,
+      32,
+      "sha256",
+      function (err, hashedPassword) {
+        if (err) {
+          return next(err);
+        }
 
-    try {
-      const { email, password } = req.body;
-      await db.query(
-        "INSERT INTO users(user_email,user_password) VALUES($1,$2)",
-        [email, password]
-      );
-      return res.send("user registration success");
-    } catch (error) {
-      console.error(error.message);
-    }
-  });
+        db.query(
+          "INSERT INTO users(user_email,password_hash,salt) VALUES($1,$2,$3)",
+          [email, hashedPassword, salt],
+          function (err) {
+            if (err) {
+              return next(err);
+            }
+            // var user = {
+            //   id: this.lastID,
+            //   username: req.body.username,
+            // };
+            // req.login(user, function (err) {
+            //   if (err) {
+            //     return next(err);
+            //   }
+            //   res.redirect("/");
+            // });
+          }
+        );
+        return res.send("success")
+      }
+    );
+  } catch (error) {
+    console.error(error.message);
+  }
 };
 
 export { registerUser };
