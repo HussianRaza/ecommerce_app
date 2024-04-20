@@ -51,3 +51,18 @@ ALTER TABLE
     users
 ADD
     COLUMN password_hash bytea;
+
+
+--create trigger to auto add an cart id when a user is created
+CREATE FUNCTION insert_into_cart() RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO cart (user_id) VALUES (NEW.id);
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER create_user_cart
+AFTER INSERT ON users
+FOR EACH ROW
+EXECUTE FUNCTION insert_into_cart();
+
