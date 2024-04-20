@@ -4,6 +4,8 @@ import loginUser from "./routes/login";
 
 import userRoutes from "./routes/user";
 
+import productRoutes from "./routes/product";
+
 import { isValid } from "./utils/validationMiddleware";
 
 import { isAuth } from "./utils/authMiddleware";
@@ -37,6 +39,8 @@ app.use("/register", isValid, registerUser);
 app.use("/login", isValid, passport.authenticate("local"), loginUser);
 
 app.use("/user", isAuth, userRoutes);
+
+app.use("/product", isAuth, productRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
