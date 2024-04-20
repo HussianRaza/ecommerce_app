@@ -5,7 +5,6 @@ const crypto = require("crypto");
 //get a user by id
 
 const getUserFromId = async (req, res) => {
-  console.log("in route");
   const { id } = req.session.passport.user;
   console.log(id);
   try {
