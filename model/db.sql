@@ -52,17 +52,66 @@ ALTER TABLE
 ADD
     COLUMN password_hash bytea;
 
-
 --create trigger to auto add an cart id when a user is created
-CREATE FUNCTION insert_into_cart() RETURNS TRIGGER AS $$
-BEGIN
-    INSERT INTO cart (user_id) VALUES (NEW.id);
-    RETURN NULL;
+CREATE FUNCTION insert_into_cart() RETURNS TRIGGER AS $ $ BEGIN
+INSERT INTO
+    cart (user_id)
+VALUES
+    (NEW.id);
+
+RETURN NULL;
+
 END;
-$$ LANGUAGE plpgsql;
+
+$ $ LANGUAGE plpgsql;
 
 CREATE TRIGGER create_user_cart
-AFTER INSERT ON users
-FOR EACH ROW
-EXECUTE FUNCTION insert_into_cart();
+AFTER
+INSERT
+    ON users FOR EACH ROW EXECUTE FUNCTION insert_into_cart();
 
+--add a table named order_products
+CREATE TABLE orders_products order_id int REFERENCES orders(id),
+product_id int REFERENCES products(id),
+product_qty int,
+PRIMARY KEY (order_id, product_id);
+
+--final fixed implementation
+CREATE FUNCTION copy_into_orders_products() RETURNS TRIGGER AS $ $ BEGIN
+INSERT INTO
+    orders_products (order_id, product_id, product_qty)
+SELECT
+    orders.id AS order_id,
+    cart_products.product_id,
+    cart_products.product_qty
+FROM
+    cart_products,
+    orders
+WHERE
+    cart_id = (
+        SELECT
+            id
+        FROM
+            cart
+        WHERE
+            user_id = NEW.user_id
+    )
+    AND orders.id = NEW.id;
+
+DELETE FROM
+    cart_products
+WHERE
+    cart_id = (
+        SELECT
+            id
+        FROM
+            cart
+        WHERE
+            user_id = NEW.user_id
+    );
+
+RETURN NULL;
+
+END;
+
+$ $ LANGUAGE plpgsql;
