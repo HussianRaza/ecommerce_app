@@ -10,6 +10,8 @@ import cartRoutes from "./routes/cart";
 
 import checkoutRoute from "./routes/checkout";
 
+import orderRoute from "./routes/order";
+
 import { isValid } from "./utils/validationMiddleware";
 
 import { isAuth } from "./utils/authMiddleware";
@@ -49,6 +51,8 @@ app.use("/product", isAuth, productRoutes);
 app.use("/cart", isAuth, cartRoutes);
 
 app.use("/checkout", isAuth, checkoutRoute);
+
+app.use("/order", isAuth, orderRoute);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
