@@ -21,8 +21,19 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const session = require("express-session");
+const morgan = require("morgan");
+const cors = require("cors");
+const corsOptions = {
+  origin: "*",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
 
 require("./controller/passport");
+
+app.use(cors(corsOptions)); // Use this after the variable declaration
+
+app.use(morgan("tiny"));
 
 app.use(express.json());
 
