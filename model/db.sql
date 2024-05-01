@@ -41,17 +41,6 @@ CREATE TABLE cart_products(
     PRIMARY KEY(cart_id, product_id)
 );
 
---update table to have salt hash
-ALTER TABLE
-    users
-ADD
-    COLUMN salt bytea;
-
-ALTER TABLE
-    users
-ADD
-    COLUMN password_hash bytea;
-
 --create trigger to auto add an cart id when a user is created
 CREATE FUNCTION insert_into_cart() RETURNS TRIGGER AS $ $ BEGIN
 INSERT INTO
