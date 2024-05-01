@@ -1,37 +1,23 @@
-const crypto = require("crypto");
-
+const bcrypt = require("bcrypt");
 import db from "../model/db";
 
-const registerUser = async (req, res, next) => {
+const registerUser = (req, res, next) => {
   try {
-    const { email } = req.body;
+    const { email, password } = req.body;
+    const saltRounds = 15;
 
-    var salt = crypto.randomBytes(16);
-    crypto.pbkdf2(
-      req.body.password,
-      salt,
-      310000,
-      32,
-      "sha256",
-      function (err, hashedPassword) {
-        if (err) {
-          return next(err);
-        }
-
-        db.query(
-          "INSERT INTO users(user_email,password_hash,salt) VALUES($1,$2,$3)",
-          [email, hashedPassword, salt],
-          function (err) {
-            if (err) {
-              return next(err);
-            }
-          }
-        );
-        return res.send("success");
+    bcrypt.hash(password, saltRounds, async function (error, hash) {
+      if (error) {
+        return next(error);
       }
-    );
+      await db.query(
+        "INSERT INTO users(user_email,user_password) VALUES($1,$2)",
+        [email, hash]
+      );
+      return res.sendStatus(200);
+    });
   } catch (error) {
-    console.error(error.message);
+    return res.json({ error: error.message });
   }
 };
 

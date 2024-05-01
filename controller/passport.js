@@ -1,8 +1,7 @@
 import db from "../model/db";
-
-var passport = require("passport");
-var LocalStrategy = require("passport-local");
-var crypto = require("crypto");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require("bcrypt");
 
 passport.use(
   new LocalStrategy(
@@ -10,45 +9,32 @@ passport.use(
       usernameField: "email",
       passwordField: "password",
     },
-    function verify(email, password, cb) {
-      db.query(
-        "SELECT * FROM users WHERE user_email = $1",
-        [email],
-        function (err, res) {
-          if (err) {
-            return cb(err);
-          }
-          if (!res.rows[0]) {
-            return cb(null, false, {
-              message: "Incorrect username or password.",
-            });
-          }
-
-          crypto.pbkdf2(
-            password,
-            res.rows[0].salt,
-            310000,
-            32,
-            "sha256",
-            function (err, hashedPassword) {
-              if (err) {
-                return cb(err);
-              }
-              if (
-                !crypto.timingSafeEqual(
-                  res.rows[0].password_hash,
-                  hashedPassword
-                )
-              ) {
-                return cb(null, false, {
-                  message: "Incorrect username or password.",
-                });
-              }
-              return cb(null, res.rows[0]);
-            }
-          );
+    async (email, password, done) => {
+      try {
+        console.log(email);
+        console.log(password);
+        const dbRes = await db.query(
+          "SELECT * FROM users WHERE user_email = $1",
+          [email]
+        );
+        const user = dbRes.rows[0];
+        if (!user) {
+          return done(null, false, { error: "Incorrect username" });
         }
-      );
+
+        const passwordsMatch = await bcrypt.compare(
+          password,
+          user.user_password
+        );
+
+        if (passwordsMatch) {
+          return done(null, user);
+        } else {
+          return done(null, false, { error: "Incorrect password" });
+        }
+      } catch (err) {
+        return done(err);
+      }
     }
   )
 );
