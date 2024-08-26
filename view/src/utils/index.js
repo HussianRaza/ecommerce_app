@@ -11,8 +11,8 @@ const registerUser = async ({ email, password }) => {
   return res;
 };
 
-const loginUser = ({ email, password }) => {
-  const res = fetch(`${baseUrl}/login`, {
+const loginUser = async ({ email, password }) => {
+  const res = await fetch(`${baseUrl}/login`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
