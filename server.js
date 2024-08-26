@@ -55,6 +55,26 @@ app.use("/register", isValid, registerUser);
 
 app.use("/login", isValid, passport.authenticate("local"), loginUser);
 
+// app.use("/login", isValid, (req, res, next) => {
+//   passport.authenticate("local", (err, user, info) => {
+//     if (err) {
+//       return next(err);
+//     }
+//     if (!user) {
+//       return res
+//         .status(401)
+//         .json({ message: "Authentication failed", ...info });
+//     }
+//     req.logIn(user, async (err) => {
+//       if (err) {
+//         return next(err);
+//       }
+//       await loginUser(req, res);
+//     });
+//   })(req, res, next);
+// });
+
+
 app.use("/user", isAuth, userRoutes);
 
 app.use("/product", isAuth, productRoutes);
