@@ -1,8 +1,10 @@
 import { useState } from "react";
 
 import { loginUser } from "../../utils";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -17,6 +19,7 @@ function Login() {
       console.log("login success");
     }
     setIsLoading(false);
+    navigate("/web")
   };
   return (
     <>
