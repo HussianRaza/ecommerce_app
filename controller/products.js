@@ -4,7 +4,7 @@ import db from "../model/db";
 const getAllProduct = async (req, res) => {
   try {
     const products = await db.query("SELECT * FROM products ");
-    res.send(products);
+    res.send(products.rows);
   } catch (error) {
     res.json({ error: error.message });
   }
