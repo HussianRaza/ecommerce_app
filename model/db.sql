@@ -104,3 +104,10 @@ RETURN NULL;
 END;
 
 $ $ LANGUAGE plpgsql;
+
+--added price and img columns in the database
+
+alter table products
+add column price int ,
+add column img varchar(255)
+;
