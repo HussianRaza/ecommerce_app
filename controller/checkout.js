@@ -2,8 +2,6 @@ import db from "../model/db";
 
 const postItemToOrder = async (req, res) => {
   try {
-    const userId = req.session.passport.user.id;
-
     //get address if from address table
     const dbRes = await db.query("SELECT id FROM address WHERE user_id = $1", [
       userId,

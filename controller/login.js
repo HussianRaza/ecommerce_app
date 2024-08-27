@@ -7,8 +7,7 @@ const loginUser = async (req, res) => {
 
   req.session.cartId = dbRes.rows[0].id;
 
-
-  return res.send("success login")
+  return res.send("success login");
 };
 
 export { loginUser };
