@@ -16,7 +16,7 @@ function ProductCard() {
           <p className="mb-2 text-base  text-gray-700">
             Product description goes here.
           </p>
-          <div className="flex items-center space-b">
+          <div className="flex items-center justify-between mx-1">
             <div className="flex items-center">
               <p className="mr-2 text-lg font-semibold text-gray-900 ">
                 $20.00
