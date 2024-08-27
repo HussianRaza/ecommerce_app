@@ -24,7 +24,9 @@ const loginUser = async ({ email, password }) => {
 
 const getAllProducts = async () => {
   const res = await fetch(`${baseUrl}/product`);
-  return res;
+  const json = await res.json();
+
+  return json;
 };
 
-export { loginUser, registerUser ,getAllProducts};
+export { loginUser, registerUser, getAllProducts };
