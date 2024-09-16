@@ -12,7 +12,7 @@ function Header() {
                 Shoe Shop.
               </span>
             </div>
-            <div className="ml-6 flex flex-1 gap-x-3">
+            <div className="ml-6 flex flex-1 gap-x-3 ">
               <input
                 type="text"
                 className="w-full rounded-md border border-[#DDE2E4] px-3 py-2 text-sm"
