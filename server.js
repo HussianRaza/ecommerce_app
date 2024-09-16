@@ -24,7 +24,7 @@ const session = require("express-session");
 const morgan = require("morgan");
 const cors = require("cors");
 const corsOptions = {
-  origin: "*",
+  origin: "http://localhost:5173",
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
@@ -73,7 +73,6 @@ app.use("/login", isValid, passport.authenticate("local"), loginUser);
 //     });
 //   })(req, res, next);
 // });
-
 
 app.use("/user", isAuth, userRoutes);
 

@@ -23,7 +23,10 @@ const loginUser = async ({ email, password }) => {
 };
 
 const getAllProducts = async () => {
-  const res = await fetch(`${baseUrl}/product`);
+  const res = await fetch(`${baseUrl}/product`, {
+    method: "GET",
+    credentials: "include",
+  });
   const json = await res.json();
 
   return json;
