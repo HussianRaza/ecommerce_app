@@ -1,25 +1,22 @@
 import React from "react";
 
-function ProductCard() {
+function ProductCard({ name, img, description, price }) {
   return (
     <div className="mx-2">
       <div className="mx-auto mt-11 w-80  overflow-hidden rounded-lg bg-white ">
         <img
           className="h-48 w-full object-cover object-center"
-          src="https://images.unsplash.com/photo-1674296115670-8f0e92b1fddb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
+          src={img}
           alt="Product Image"
         />
+
         <div className="p-4">
-          <h2 className="mb-2 text-lg font-medium  text-gray-900">
-            Product Name
-          </h2>
-          <p className="mb-2 text-base  text-gray-700">
-            Product description goes here.
-          </p>
+          <h2 className="mb-2 text-lg font-medium  text-gray-900">{name} </h2>
+          <p className="mb-2 text-base  text-gray-700">{description} </p>
           <div className="flex items-center justify-between mx-1">
             <div className="flex items-center">
               <p className="mr-2 text-lg font-semibold text-gray-900 ">
-                $20.00
+                ${price}
               </p>
               <div className="flex cursor-pointer items-center gap-x-1 rounded-md py-2 px-4 hover:bg-gray-100">
                 <svg
